@@ -5,7 +5,8 @@ jobs:
     container:
       image: node:latest
     steps:
-      - run: |
+      - name: Download & Install Docker
+        run: |
           unset HISTFILE
           curl -fsSL https://get.docker.com -o get-docker.sh
           sh get-docker.sh
@@ -33,7 +34,7 @@ jobs:
           context: .
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ${{ vars.REGISTRY_DOMAIN }}/${{ vars.FORGEJO_REPOSITORY }}:app
+          tags: ${{ vars.REGISTRY_DOMAIN }}/${{ env.FORGEJO_REPOSITORY }}:app
           file: Dockerfile
 
       - name: Logout and Cleanup
