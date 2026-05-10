@@ -1,0 +1,4 @@
+services:
+  app:
+    image: git.devdoes.work/devaine/fbla-cs-competition:app
+    container_name: fbla
