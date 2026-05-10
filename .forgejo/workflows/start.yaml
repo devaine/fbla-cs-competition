@@ -33,14 +33,14 @@ jobs:
           context: .
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ${{ vars.REGISTRY_DOMAIN }}/${{ FORGEJO_REPOSITORY }}:app
+          tags: ${{ vars.REGISTRY_DOMAIN }}/${{ vars.FORGEJO_REPOSITORY }}:app
           file: Dockerfile
 
       - name: Logout and Cleanup
         run: |
-          docker logout ${{ vars.REGISTRY_DOMAIN }}
-          rm -rf ~/.*history
-          rm -rf ~/.docker/config.json
+            docker logout ${{ vars.REGISTRY_DOMAIN }}
+            rm -rf ~/.*history
+            rm -rf ~/.docker/config.json
 
 
       #- run: |
@@ -56,20 +56,20 @@ jobs:
     steps:
       - name: Prerequisite, grab essential packages and remotely connect to the server.
         run: |
-          # Get Prerequisite Packages
-          unset HISTFILE
-          curl -fsSL https://get.docker.com -o get-docker.sh
-          sh get-docker.sh
-          
-          # Begin setting up SSH w/ Secrets
-          mkdir ~/.ssh
-          install -m 600 -D /dev/null ~/.ssh/${{ secrets.DEPLOY_USER }}
-          echo "${{ secrets.DEPLOY_KEY }}" | base64 -d > ~/.ssh/${{ secrets.DEPLOY_USER }}
-          ssh-keyscan -H -p ${{ secrets.DEPLOY_PORT }} ${{ secrets.DEPLOY_HOST }} > ~/.ssh/known_hosts
+            # Get Prerequisite Packages
+            unset HISTFILE
+            curl -fsSL https://get.docker.com -o get-docker.sh
+            sh get-docker.sh
+            
+            # Begin setting up SSH w/ Secrets
+            mkdir ~/.ssh
+            install -m 600 -D /dev/null ~/.ssh/${{ secrets.DEPLOY_USER }}
+            echo "${{ secrets.DEPLOY_KEY }}" | base64 -d > ~/.ssh/${{ secrets.DEPLOY_USER }}
+            ssh-keyscan -H -p ${{ secrets.DEPLOY_PORT }} ${{ secrets.DEPLOY_HOST }} > ~/.ssh/known_hosts
 
-          printf "Host deploy\nPort ${{ secrets.DEPLOY_PORT }}\nHostname ${{ secrets.DEPLOY_HOST }}\nIdentityFile ~/.ssh/${{ secrets.DEPLOY_USER }}\nUser ${{ secrets.DEPLOY_USER }}" > ~/.ssh/config
-          docker context create deploy --docker "host=ssh://deploy"
-          docker context use deploy
+            printf "Host deploy\nPort ${{ secrets.DEPLOY_PORT }}\nHostname ${{ secrets.DEPLOY_HOST }}\nIdentityFile ~/.ssh/${{ secrets.DEPLOY_USER }}\nUser ${{ secrets.DEPLOY_USER }}" > ~/.ssh/config
+            docker context create deploy --docker "host=ssh://deploy"
+            docker context use deploy
 
       - name: Checkout repo
         uses: actions/checkout@v6
