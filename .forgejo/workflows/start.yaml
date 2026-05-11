@@ -65,7 +65,6 @@ jobs:
             sh get-docker.sh
             
             # Begin setting up SSH w/ Secrets
-            mkdir ~/.ssh
             install -m 600 -D /dev/null ~/.ssh/${{ secrets.DEPLOY_USER }}
             echo "${{ secrets.DEPLOY_KEY }}" | base64 -d > ~/.ssh/${{ secrets.DEPLOY_USER }}
             ssh-keyscan -H -p ${{ secrets.DEPLOY_PORT }} ${{ secrets.DEPLOY_HOST }} > ~/.ssh/known_hosts
