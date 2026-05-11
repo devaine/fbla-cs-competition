@@ -1,4 +1,12 @@
 services:
-  app:
+  fbla-frontend:
+    command: "web"
     image: git.devdoes.work/devaine/fbla-cs-competition:app
-    container_name: fbla
+    ports:
+      - 3000:3000
+
+  api:
+    command: "api" 
+    image: git.devdoes.work/devaine/fbla-cs-competition:app
+    ports:
+      - 8000:8000
