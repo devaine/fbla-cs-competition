@@ -79,13 +79,18 @@ jobs:
             echo ${{ secrets.API_PORT }} >> .env
 
       - name: Setup remote connection and deploy container.
+        env: 
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_PORT: ${{ secrets.DEPLOY_PORT }}
+          DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
         run: |
             # Begin setting up SSH w/ Secrets
             install -m 600 -D /dev/null ~/.ssh/${{ secrets.DEPLOY_USER }}
-            echo ${{ secrets.DEPLOY_KEY }} | base64 -d > ~/.ssh/${{ secrets.DEPLOY_USER }}
-            ssh-keyscan -H -p ${{ secrets.DEPLOY_PORT }} ${{ secrets.DEPLOY_HOST }} > ~/.ssh/known_hosts
+            echo $DEPLOY_KEY | base64 -d > ~/.ssh/$DEPLOY_USER 
+            ssh-keyscan -H -p $DEPLOY_PORT $DEPLOY_HOST > ~/.ssh/known_hosts
 
-            printf "Host deploy\nPort ${{ secrets.DEPLOY_PORT }} \nHostname ${{ secrets.DEPLOY_HOST }} \nIdentityFile ~/.ssh/ ${{ secrets.DEPLOY_USER }} \nUser ${{ secrets.DEPLOY_USER }}" > ~/.ssh/config
+            printf "Host deploy\nPort $DEPLOY_PORT\nHostname $DEPLOY_HOST\nIdentityFile ~/.ssh/$DEPLOY_USER\nUser $DEPLOY_USER" > ~/.ssh/config
             unset DOCKER_HOST
             docker context create deploy --docker "host=ssh://deploy"
             docker context use deploy
