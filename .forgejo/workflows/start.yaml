@@ -64,8 +64,8 @@ jobs:
             curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.4/install.sh | bash
 
             # WARN: after installing nvm is probably gonna be tough
-            source ~/.bashrc
-            # OR \. "$HOME/.nvm/nvm.sh"
+            \. "$HOME/.nvm/nvm.sh"
+
             nvm install 24
 
             curl -fsSL https://get.docker.com -o get-docker.sh
