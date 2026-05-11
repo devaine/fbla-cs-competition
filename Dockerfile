@@ -30,6 +30,6 @@ bash ./run.bash
 EOF
 ENV PATH="/app/api/venv/bin:$PATH"
 
-
 WORKDIR /app
+RUN ls -la
 RUN "bash run.bash"
