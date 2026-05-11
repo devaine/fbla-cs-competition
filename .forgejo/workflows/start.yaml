@@ -86,7 +86,7 @@ jobs:
           DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
         run: |
             # Begin setting up SSH w/ Secrets
-            install -m 600 -D /dev/null ~/.ssh/${{ secrets.DEPLOY_USER }}
+            install -m 600 -D /dev/null ~/.ssh/$DEPLOY_USER
             echo $DEPLOY_KEY | base64 -d > ~/.ssh/$DEPLOY_USER 
             ssh-keyscan -H -p $DEPLOY_PORT $DEPLOY_HOST > ~/.ssh/known_hosts
 
