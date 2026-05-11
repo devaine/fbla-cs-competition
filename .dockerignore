@@ -1,0 +1,8 @@
+# For development purposes only
+**/node_modules
+.env
+**/dist
+**/venv
+*.log
+**/__pycache__
+docker-compose-dev.yml

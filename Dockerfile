@@ -2,33 +2,38 @@
 # the application
 FROM node:25-alpine
 
-# WARNING: These ports are the default ports for the app, you should probably
-# change them eventually, OR use docker-compose.yml to change them.
-EXPOSE 8000
-EXPOSE 3000
+WORKDIR /app
 
 RUN <<EOF
 apk update
-apk add python3
-apk add bash
+apk add --no-cache python3 bash py3-pip
 EOF
 
-
-# NOTE: Filesystem setup (probably needs COPY and WORKDIR)
-COPY . /app
-WORKDIR /app
-
+SHELL ["/bin/bash", "-c"]
 # NOTE: Frontend setup
+COPY frontend/package.json frontend/package-lock.json ./frontend/
 WORKDIR /app/frontend
-RUN npm i
-RUN npm run build
+RUN npm ci && npx next telemetry disable
 
 # NOTE: Backend setup
 WORKDIR /app/api
-RUN <<EOF
-bash ./run.bash
-EOF
+COPY api/requirements.txt ./
+RUN python3 -m venv venv
 ENV PATH="/app/api/venv/bin:$PATH"
+RUN <<EOF
+pip install --no-cache-dir -U -r requirements.txt
+pip install -U pip
+EOF
+
+# NOTE: Copy rest of the source code
+WORKDIR /app
+COPY . .
+
+WORKDIR /app/frontend
+RUN npm run build
+
+EXPOSE 8000
+EXPOSE 3000
 
 WORKDIR /app
-RUN "bash /app/run.bash"
+ENTRYPOINT ["bash", "/app/start.bash"]
