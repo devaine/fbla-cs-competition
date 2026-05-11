@@ -5,7 +5,7 @@ import os
 
 # Load environment variables (from run.sh)
 load_dotenv()
-GEMINI_KEY = os.getenv("GEMINI_KEY")
+GEMINI_KEY = os.getenv("AI_API_KEY")
 
 # gemini stuff
 client = genai.Client(api_key=GEMINI_KEY)

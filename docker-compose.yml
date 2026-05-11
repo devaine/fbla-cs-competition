@@ -3,10 +3,12 @@ services:
     command: "web"
     image: git.devdoes.work/devaine/fbla-cs-competition:app
     ports:
-      - 3000:3000
+      - ${FRONTEND_PORT}:3000
 
   api:
     command: "api" 
     image: git.devdoes.work/devaine/fbla-cs-competition:app
+    environment:
+      AI_API_KEY: ${AI_API_KEY}
     ports:
-      - 8000:8000
+      - ${API_PORT}:8000
