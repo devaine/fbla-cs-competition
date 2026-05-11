@@ -17,7 +17,6 @@ jobs:
       - name: Login to Forgejo Container Registry
         uses: docker/login-action@v4
         with:
-          # NOTE: Used for Forgejo Runner variables
           registry: ${{ vars.REGISTRY_DOMAIN }} 
           username: ${{ vars.REGISTRY_USER }} 
           password: ${{ secrets.REGISTRY_TOKEN }}
@@ -49,8 +48,6 @@ jobs:
       #    ls -la
       #    echo "test"
 
-  # Will probably SSH into docker instance
-  # 
   deploy:
     runs-on: docker
     container:
@@ -58,7 +55,6 @@ jobs:
     steps:
       - name: Prerequisite, install node & docker
         run: |
-            # Get Prerequisite Packages
             unset HISTFILE
             apt update && apt install curl -y
             curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.4/install.sh | bash
@@ -73,13 +69,6 @@ jobs:
 
       - name: Checkout repo
         uses: actions/checkout@v6
-
-      - name: Write secrets in an .env file
-        run: |
-            echo ${{ secrets.API_PORT }} >> .env
-            echo ${{ secrets.FRONTEND_PORT }} >> .env
-            echo ${{ secrets.AI_API_KEY }} >> .env
-
 
       - name: Setup remote connection and deploy container.
         env: 
@@ -98,6 +87,11 @@ jobs:
             docker context create deploy --docker "host=ssh://deploy"
             docker context use deploy
 
+            # Add secrets to the .env file
+            echo ${{ secrets.API_PORT }} >> .env
+            echo ${{ secrets.FRONTEND_PORT }} >> .env
+            echo ${{ secrets.AI_API_KEY }} >> .env
+
             # Check to see if we have checked out the repo.
             docker compose down
             docker compose pull
@@ -107,5 +101,5 @@ jobs:
         run: |
             docker context use default
             docker context rm deploy
-            rm -rf ~/.ssh ~/.docker ~/.bash_history
+            rm -rf ~/.ssh ~/.docker ~/.bash_history .env
 
