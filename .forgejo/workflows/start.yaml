@@ -34,6 +34,7 @@ jobs:
           context: .
           platforms: linux/amd64,linux/arm64
           push: true
+          # https://forgejo.org/docs/next/user/actions/reference/#env-1
           tags: ${{ vars.REGISTRY_DOMAIN }}/${{ env.FORGEJO_REPOSITORY }}:app
           file: Dockerfile
 

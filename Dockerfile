@@ -20,19 +20,16 @@ WORKDIR /app
 
 # NOTE: Frontend setup
 WORKDIR /app/frontend
+RUN npm i
 RUN npm run build
 
 # NOTE: Backend setup
 WORKDIR /app/api
-
 RUN <<EOF
 bash ./run.bash
 EOF
-
 ENV PATH="/app/api/venv/bin:$PATH"
 
-#SHELL ["bash", "-c"]
 
 WORKDIR /app
-
 RUN "bash run.bash"
