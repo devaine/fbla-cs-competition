@@ -1,39 +1,48 @@
-# TODO: Plan for docker-compose.yml, create a script on run.bash to wait for .env file to run
-# the application
+# TODO: Plans:
+# Multi-stage builds, seperating building frontend & pre-requisites
+
+# NOTE: Frontend setup
+FROM node:25-alpine AS frontend-build
+
+WORKDIR /app/frontend
+
+COPY frontend/package.json frontend/package-lock.json ./
+
+ENV NEXT_TELEMETRY_DISABLED=1
+
+RUN npm ci
+
+COPY frontend/ .
+
+RUN npm run build
+
+# NOTE: Backend setup
+FROM node:25-alpine AS backend-build
+
+RUN apk add --no-cache python3 py3-pip
+
+WORKDIR /app/api
+
+COPY api/requirements.txt ./
+
+RUN python3 -m venv --copies venv
+
+ENV PATH="/app/api/venv/bin:$PATH"
+
+RUN pip install --no-cache-dir -U -r requirements.txt
+
+COPY api/src src/
+
+
+# Actual setup
 FROM node:25-alpine
 
 WORKDIR /app
 
-RUN <<EOF
-apk update
-apk add --no-cache python3 bash py3-pip
-EOF
+RUN apk add --no-cache bash python3
 
-SHELL ["/bin/bash", "-c"]
-# NOTE: Frontend setup
-COPY frontend/package.json frontend/package-lock.json ./frontend/
-WORKDIR /app/frontend
-RUN npm ci && npx next telemetry disable
+COPY --from=frontend-build /app/frontend frontend
+COPY --from=backend-build /app/api api
+COPY start.bash .
 
-# NOTE: Backend setup
-WORKDIR /app/api
-COPY api/requirements.txt ./
-RUN python3 -m venv venv
-ENV PATH="/app/api/venv/bin:$PATH"
-RUN <<EOF
-pip install --no-cache-dir -U -r requirements.txt
-pip install -U pip
-EOF
-
-# NOTE: Copy rest of the source code
-WORKDIR /app
-COPY . .
-
-WORKDIR /app/frontend
-RUN npm run build
-
-EXPOSE 8000
-EXPOSE 3000
-
-WORKDIR /app
 ENTRYPOINT ["bash", "/app/start.bash"]
