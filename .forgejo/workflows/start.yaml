@@ -56,21 +56,30 @@ jobs:
     container:
       image: ubuntu:latest
     steps:
-      - name: Prerequisite, grab essential packages and remotely connect to the server.
+      - name: Prerequisite, install node & docker
         run: |
             # Get Prerequisite Packages
             unset HISTFILE
             apt update && apt install curl -y
             curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.4/install.sh | bash
 
-            # WARN: after installing nvm is probably gonna be tough
             \. "$HOME/.nvm/nvm.sh"
-
             nvm install 24
 
             curl -fsSL https://get.docker.com -o get-docker.sh
             sh get-docker.sh
             
+            echo "$HOME/.nvm/versions/node/v24.15.0/bin/" >> $GITHUB_PATH
+
+      - name: Checkout repo
+        uses: actions/checkout@v6
+
+      - name: Write secrets in an .env file
+        run: |
+            echo ${{ secrets.API_PORT }} >> .env
+
+      - name: Setup remote connection and deploy container.
+        run: |
             # Begin setting up SSH w/ Secrets
             install -m 600 -D /dev/null ~/.ssh/${{ secrets.DEPLOY_USER }}
             echo "${{ secrets.DEPLOY_KEY }}" | base64 -d > ~/.ssh/${{ secrets.DEPLOY_USER }}
@@ -81,21 +90,14 @@ jobs:
             docker context create deploy --docker "host=ssh://deploy"
             docker context use deploy
 
-            echo "$HOME/.nvm/versions/node/v24.15.0/bin/" >> $GITHUB_PATH
-
-
-      - name: Checkout repo
-        uses: actions/checkout@v6
-
-
-      - name: Write secrets in an .env file
-        run: |
-            echo ${{ secrets.API_PORT }} >> .env
-
-      - name: Use the docker-compose.yml file to refresh the instance
-        run: |
             # Check to see if we have checked out the repo.
             docker compose down
             docker compose pull
             docker compose up -d
+
+      - name: Start Cleanup
+        run: |
+            docker context use default
+            docker context rm deploy
+            rm -rf ~/.ssh ~/.docker ~/.bash_history
 
