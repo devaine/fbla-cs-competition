@@ -76,6 +76,10 @@ jobs:
           DEPLOY_PORT: ${{ secrets.DEPLOY_PORT }}
           DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
           DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+
+          API_PORT: ${{ secrets.API_PORT }}
+          FRONTEND_PORT: ${{ secrets.FRONTEND_PORT }}
+          AI_API_KEY: ${{ secrets.AI_API_KEY }}
         run: |
             # Begin setting up SSH w/ Secrets
             install -m 600 -D /dev/null ~/.ssh/$DEPLOY_USER
@@ -88,9 +92,11 @@ jobs:
             docker context use deploy
 
             # Add secrets to the .env file
-            echo ${{ secrets.API_PORT }} >> .env
-            echo ${{ secrets.FRONTEND_PORT }} >> .env
-            echo ${{ secrets.AI_API_KEY }} >> .env
+            echo <<EOF > .env
+            "API_PORT=$API_PORT"
+            "FRONTEND_PORT=$FRONTEND_PORT"
+            "AI_API_KEY=$AI_API_KEY"
+            EOF
 
             # Check to see if we have checked out the repo.
             docker compose down
