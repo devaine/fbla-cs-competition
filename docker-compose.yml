@@ -5,7 +5,7 @@ services:
     ports:
       - ${FRONTEND_PORT}:3000
 
-  api:
+  fbla-api:
     command: "api" 
     image: git.devdoes.work/devaine/fbla-cs-competition:app
     environment:

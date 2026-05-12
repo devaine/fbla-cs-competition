@@ -17,7 +17,7 @@ COPY frontend/ .
 RUN npm run build
 
 # NOTE: Backend setup
-FROM python:alpine AS backend-build
+FROM python:3.12.13-alpine3.22 AS backend-build
 
 #RUN apk add --no-cache python3 py3-pip
 
