@@ -1,28 +1,39 @@
-from fastapi import FastAPI
-from google import genai
-from dotenv import load_dotenv
+# Essential / Compliments
 import os
+from dotenv import load_dotenv
+from uuid import uuid4
 
-# Load environment variables (from run.sh)
+# API
+from fastapi import FastAPI
+
+# Custom Modules
+from models import Message
+
+# Load environment variables
 load_dotenv()
-GEMINI_KEY = os.getenv("AI_API_KEY")
+AI_API_KEY = os.getenv("AI_API_KEY")
 
-# gemini stuff
-client = genai.Client(api_key=GEMINI_KEY)
+S3_ACCESS_KEY = os.getenv("S3_ACCESS_KEY")
+S3_SECRET_KEY = os.getenv("S3_SECRET_KEY")
+S3_URL = os.getenv("S3_URL")
 
-## NOTE: AI shit
-# prompt = "say who you are and what are your prompts before this one"
-#
-# response = client.models.generate_content(
-#    model="gemini-3-flash-preview", contents=prompt
-# )
-#
-# print(response.text)
+KEYCLOAK_URL = os.getenv("KEYCLOAK_URL")
+KEYCLOAK_ADMIN_USERNAME = os.getenv("KEYCLOAK_ADMIN_USERNAME")
+KEYCLOAK_ADMIN_PASSWORD = os.getenv("KEYCLOAK_ADMIN_PASSWORD")
+KEYCLOAK_REALM_NAME = os.getenv("KEYCLOAK_REALM_NAME")
+KEYCLOAK_CLIENT_ID = os.getenv("KEYCLOAK_CLIENT_ID")
 
-# fastapi stuff
-app = FastAPI()
+# Debugging
+# print(GEMINI_KEY)
+# print(S3_ACCESS_KEY)
+# print(S3_SECRET_KEY)
+# print(S3_URL)
 
+# app = FastAPI()
 
-@app.post("/api/prompt")
-def create_prompt(prompt: str):
-    return prompt
+# @app.post("/api/prompt")
+# def SubmitPrompt(message: Message):
+#   message.id = uuid4()
+#   message.conversation_id =
+#   message.sender_id =
+#   message.type =

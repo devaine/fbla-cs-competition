@@ -2,3 +2,8 @@ fastapi[standard]
 google-genai
 python-dotenv
 pydantic
+# Amazon Packages (Yes, you need `pyright` to use boto3-stubs)
+boto3
+boto3[crt]
+boto3-stubs[essential]
+python-keycloak
