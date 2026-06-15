@@ -65,7 +65,7 @@ jobs:
             curl -fsSL https://get.docker.com -o get-docker.sh
             sh get-docker.sh
             
-            echo "$HOME/.nvm/versions/node/v24.15.0/bin/" >> $GITHUB_PATH
+            echo "export PATH=$PATH:$HOME/.nvm/versions/node/v24.15.0/bin/" >> $HOME/.bashrc
 
       - name: Checkout repo
         uses: actions/checkout@v6

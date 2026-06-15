@@ -1,13 +1,6 @@
-# Essential / Compliments
+# Essential
 import os
 from dotenv import load_dotenv
-from uuid import uuid4
-
-# API
-from fastapi import FastAPI
-
-# Custom Modules
-from models import Message
 
 # Load environment variables
 load_dotenv()
@@ -22,18 +15,18 @@ KEYCLOAK_ADMIN_USERNAME = os.getenv("KEYCLOAK_ADMIN_USERNAME")
 KEYCLOAK_ADMIN_PASSWORD = os.getenv("KEYCLOAK_ADMIN_PASSWORD")
 KEYCLOAK_REALM_NAME = os.getenv("KEYCLOAK_REALM_NAME")
 KEYCLOAK_CLIENT_ID = os.getenv("KEYCLOAK_CLIENT_ID")
+KEYCLOAK_CLIENT_SECRET = os.getenv("KEYCLOAK_CLIENT_SECRET")
 
 # Debugging
-# print(GEMINI_KEY)
-# print(S3_ACCESS_KEY)
-# print(S3_SECRET_KEY)
-# print(S3_URL)
-
-# app = FastAPI()
-
-# @app.post("/api/prompt")
-# def SubmitPrompt(message: Message):
-#   message.id = uuid4()
-#   message.conversation_id =
-#   message.sender_id =
-#   message.type =
+print(
+    "AI KEY: " + str(AI_API_KEY) + "\n"
+    "S3 ACCESS KEY: " + str(S3_ACCESS_KEY) + "\n"
+    "S3 SECRET KEY: " + str(S3_SECRET_KEY) + "\n"
+    "S3 URL: " + str(S3_URL) + "\n"
+    "KEYCLOAK URL: " + str(KEYCLOAK_URL) + "\n"
+    "KEYCLOAK ADMIN USERNAME: " + str(KEYCLOAK_ADMIN_USERNAME) + "\n"
+    "KEYCLOAK ADMIN PASSWORD: " + str(KEYCLOAK_ADMIN_PASSWORD) + "\n"
+    "KEYCLOAK REALM NAME: " + str(KEYCLOAK_REALM_NAME) + "\n"
+    "KEYCLOAK CLIENT ID: " + str(KEYCLOAK_CLIENT_ID) + "\n"
+    "KEYCLOAK CLIENT SECRET: " + str(KEYCLOAK_CLIENT_SECRET) + "\n"
+)
